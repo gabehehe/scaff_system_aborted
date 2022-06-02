@@ -1,0 +1,11 @@
+<div id="altera_pessoa" ajax-url="{% url 'ajax' %}" >
+    {% csrf_token %}
+    {% include 'form.html' with form=form_pessoa %}
+    {% include 'form.html' with form=form_ent_pessoa %}
+
+
+<!--    <input id="oi" name="oi" value="{{ id_entidade_endereco }}" hidden />-->
+
+    <input type="submit" value="Adicionar"   class='btn btn-primary'/>
+<!--    <input class="btn btn-primary" type="submit" value="Adicionar">-->
+</div>

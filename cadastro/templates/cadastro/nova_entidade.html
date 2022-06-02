@@ -1,0 +1,220 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block navbar-breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="{% url 'entidade/home' %}">Cadastro</a>
+</li>
+<li class="breadcrumb-item">
+    <a href="">{{ page_title }}</a>
+</li>
+{% endblock %}
+
+{% block container %}
+
+<form method="POST" id="entidadeForm" ajax-url="{% url 'ajax' %}">
+    {% csrf_token %}
+
+    <div class="row">
+        <div id="cadastro-tabs" class="offset-3 col-6">
+            <ul id="form-cadastro-steps" class="nav nav-steps">
+                <li class="nav-item active">
+                    <a class="nav-link active" data-toggle="tab" href="#entidade">
+                        <span class="nav-label">Entidade</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#enderecos">
+                        <span class="nav-label">Endereços</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab_representantes" data-toggle="tab" href="#representantes">
+                        <span class="nav-label">Representantes</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="tab_agrs" data-toggle="tab" href="#agrs">
+                        <span class="nav-label">AGRs</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#processos">
+                        <span class="nav-label">Processos</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+            </ul>
+            <div id="form-cadastro-content" class="tab-content">
+                <div class="tab-pane fade show active" id="entidade">
+                    <div class="form-row justify-content-around">
+                        {% include 'form.html' with form=form_entidade %}
+                        {% include 'form.html' with form=form_ent_vin %}
+                        {% include 'form.html' with form=form_ent_vin_sit %}
+                    </div>
+                    <div class="form-actions row justify-content-around">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-5 d-flex justify-content-end">
+                            <a href="#enderecos" data-toggle="tab" class="tab-next btn btn-primary">Avançar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="enderecos">
+                    <div class="form-row justify-content-around">
+                        <div class="form-group col-md-4">
+                          <label for="id_estado_ibge">UF</label>
+                          <select class="form-control" id="id_estado_ibge">
+                              <option value="0">----------</option>
+                              {% for e in list_estados_ibge %}
+                              <option value="{{ e.id }}">{{ e }}</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_municipio_ibge">Cidade</label>
+                          <select class="form-control" id="id_municipio_ibge">
+                              <option value="0">----------</option>
+                              {% for m in list_mun_ibge %}
+                                  <option value="{{ m.id }}">{{ m }}</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_cep">CEP</label>
+                          <input type="text" name="cep" class="form-control cep" id="id_cep" onchange="">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_logradouro">Logradouro</label>
+                          <input type="text" name="logradouro" class="form-control logradouro" id="id_logradouro">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_bairro">Bairro</label>
+                          <input type="text" name="bairro" class="form-control bairro" id="id_bairro">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_numero">Número</label>
+                          <input type="text" name="numero" class="form-control numero" id="id_numero">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_complemento">Complemento</label>
+                          <input type="text" name="complemento" class="form-control complemento" id="id_complemento">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_latitude">Latitude</label>
+                          <input type="text" name="latitude" class="form-control latitude" id="id_latitude">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_longitude">Longitude</label>
+                          <input type="text" name="longitude" class="form-control longitude" id="id_longitude">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_tipo_endereco">Tipo endereço</label>
+                          <input type="text" name="tipo_endereco" class="form-control tipo_endereco" id="id_tipo_endereco">
+                        </div>
+                        <div class="form-group col-md-4">
+                          <label for="id_dt_criacao">Data criação</label>
+                          <input type="text" name="dt_criacao" class="form-control dt_criacao" id="id_dt_criacao">
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div id="listenderecos">
+                            <table id="table-listenderecos" class="table table-striped">
+                              <tr>
+                                <td>Teste</td>
+                                <td>outro tete</td>
+                              </tr>
+                              <tr>
+                                <td>Teste</td>
+                                <td>outro tete</td>
+                              </tr>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-actions row justify-content-around mb-5">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-5 d-flex justify-content-end">
+                            <input type="button" value="Adicionar endereço" id="novoendereco" class="btn btn-primary">
+                        </div>
+                    </div>
+                    <div class="form-actions row justify-content-around">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-5 d-flex justify-content-end">
+                            <a href="#entidade" data-toggle="tab" class="tab-prev btn btn-primary">Voltar</a>
+                            <a href="#pessoafisica" data-toggle="tab" class="tab-next btn btn-primary">Avançar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="representantes">
+                    <div id="listpessoas">
+                        <table id="table-listpessoas" class="table table-striped">
+                        </table>
+                    </div>
+                    <input type="text" name="cpf" class="cpf" placeholder="CPF" id="id_cpf_rep" onchange="">
+                    <input type="text" name="nome" class="nome" placeholder="Nome" id="id_nome_rep">
+                    <input type="text" name="telefone" class="telefone" placeholder="Telefone">
+                    <input type="text" name="email" class="email" placeholder="Email">
+                    <input type="button" value="Adiciona Representante" id="novorep"
+                           onclick="btn_click('representantes')">
+
+
+                </div>
+                <div class="tab-pane fade" id="agrs">
+                    <div id="listpessoas">
+                        <table id="table-listpessoas" class="table table-striped">
+                        </table>
+                    </div>
+                    <input type="text" name="cpf" class="cpf" placeholder="CPF">
+                    <input type="text" name="nome" class="nome" placeholder="Nome">
+                    <input type="text" name="telefone" class="telefone" placeholder="Telefone">
+                    <input type="text" name="email" class="email" placeholder="Email">
+                    <input type="button" value="Adiciona AGR" id="novoagr" onclick="btn_click('agrs')">
+                </div>
+
+                <div class="tab-pane fade" id="processos">
+                    <div id="listprocessos">
+                        <table id="table-listprocessos" class="table table-striped">
+                        </table>
+                    </div>
+
+                    <input type="text" name="nro_processo" placeholder="Nro processo" maxlength="255"
+                           id="id_nro_processo"><br/>
+                    <select id="id_tipo_processo">
+                        <option value="0">----------</option>
+                        {% for p in listTipoProcesso %}
+                        <option value="{{ p.id }}">{{ p.descricao_processo }}</option>
+                        {% endfor %}
+                    </select>
+                    <br/>
+                    <textarea rows="4" cols="50" id="id_descricao">
+                    </textarea>
+                    <br/><br/><br/>
+                    <input type="button" value="Adiciona Processo" id="novoprocesso">
+                    <!--                        {% include 'form.html' with form=form_sei %}-->
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Salvar" id="novaentidade">
+        </div>
+    </div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+
+{% endblock %}
+
+{% block custom_js %}
+<script src="{% static 'js/cadastro_forms.js' %}"></script>
+<script src="{% static 'js/jquery.tabletojson.js' %}"></script>
+{% endblock %}

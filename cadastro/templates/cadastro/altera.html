@@ -1,0 +1,393 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block navbar-breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'entidade/home' %}">Cadastro</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'entidade/cadastro' %}">Entidade</a>
+    </li>
+    {% if entidade %}
+    <li class="breadcrumb-item">
+        <a href="">{{ entidade.nome_entidade }}</a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block container %}
+
+
+
+
+<form method="POST" id="alteraForm" ajax-url="{% url 'ajax' %}">
+    {% csrf_token %}
+
+    <center><h2><b>{{ entidade.nome_entidade }}</b></h2></center>
+    <div class="row">
+        <div id="cadastro-tabs" class="offset-1 col-10">
+            <ul id="form-cadastro-steps" class="nav nav-steps">
+                <li class="nav-item {% if not entidade_active %}{% else %}active{% endif %} " id="tab_entidade">
+                    <a class="nav-link {% if not entidade_active %}{% else %}active{% endif %} " data-toggle="tab" href="#entidade">
+                        <span class="nav-label">Entidade</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+
+
+                <li class="nav-item" >
+                    <a class="nav-link" data-toggle="tab" href="#entidadesvinculadas">
+                        <span class="nav-label">Entidades Vinculadas</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+
+                <li class="nav-item {% if not endereco_active %}{% else %}active{% endif %} " id="tab_enderecos">
+                    <a class="nav-link  {% if not endereco_active %}{% else %}active{% endif %} " data-toggle="tab" href="#enderecos">
+                        <span class="nav-label">Endereços</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+
+
+
+                <li class="nav-item {% if not pessoa_active %}{% else %}active{% endif %} " id="tb_pessoas"">
+                    <a class="nav-link" data-toggle="tab" href="#pessoafisica">
+                        <span class="nav-label">Pessoa Física</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+                <li class="nav-item {% if not sei_active %}{% else %}show active{% endif %}" >
+                    <a class="nav-link" data-toggle="tab" href="#processos">
+                        <span class="nav-label">Processos</span>
+                        <div class="nav-step"></div>
+                    </a>
+                </li>
+            </ul>
+            <div id="form-cadastro-content" class="tab-content">
+                <div class="tab-pane fade {% if not entidade_active %}{% else %}show active{% endif %} " id="entidade">
+                    {% include 'form.html' with form=form_entidade %}
+                </div>
+
+                <div class="tab-pane fade" id="entidadesvinculadas">
+
+                    <table class="table table-stipped form-table">
+                        <thead class="thead-light">
+                            <th>Entidade</th>
+                            <th>CNPJ</th>
+                            <th>DT</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </thead>
+
+
+                        {% for ev in entidadesvinculadasPais %}
+                            <tr>
+                                <td>{{ ev.entidade_propria.nome_entidade }}</td>
+                                <td>{{ ev.entidade_propria.cnpj_entidade }}</td>
+                                <td>{{ ev.entidade_propria.dt_credenciamento }}</td>
+                                <td>
+                                    {% for evs in ev.entidadevinsituacao_set.all %}
+                                        {% if evs.dt_extincao == None %}
+                                           {{ evs.situacao.descricao_situacao }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td><button>E</button><button>X</button></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                    {% if entidadesvinculadasFilhas.count != 0 %}
+                        <hr class="sidebar-divider"><br/>
+                        <table class="table table-stipped form-table">
+                            <thead class="thead-light">
+                                <th>Entidade</th>
+                                <th>CNPJ</th>
+                                <th>Situação</th>
+                                <th>Ações</th>
+                            </thead>
+                            {% for ev in entidadesvinculadasFilhas %}
+                                <tr>
+                                    <td>{{ ev.entidade_filha.nome_entidade }}</td>
+                                    <td class="mask-cnpj">{{ ev.entidade_filha.cnpj_entidade }}</td>
+                                    <td>
+                                        {% for evs in ev.entidadevinsituacao_set.all %}
+                                            {% if evs.dt_extincao == None %}
+                                                {{ evs.situacao.descricao_situacao }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td><button>E</button><button>X</button> </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+
+                </div>
+
+                <div class="tab-pane fade {% if not endereco_active %}{% else %}show active{% endif %}" id="enderecos">
+                    <table class="table table-stipped form-table">
+                        <thead class="thead-light">
+                            <th>CEP</th>
+                            <th>Logradouro</th>
+                            <th>Bairro</th>
+                            <th>Número</th>
+                            <th>Complemento</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Município</th>
+                            <th>UF</th>
+                            <th>Tipo</th>
+                            <th>Ações</th>
+
+                        </thead>
+
+                        {% for ee in entidade.entidadeendereco_set.all %}
+                            {% if ee.dt_extincao == None %}
+                                <tr id="tr_ee{{ ee.id }}">
+                                    <td>{{ ee.endereco.cep }}</td>
+                                    <td>{{ ee.endereco.logradouro }}</td>
+                                    <td>{{ ee.endereco.bairro }}</td>
+                                    <td>{{ ee.endereco.numero }}</td>
+                                    <td>{{ ee.endereco.complemento }}</td>
+                                    <td>{{ ee.endereco.latitude }}</td>
+                                    <td>{{ ee.endereco.longitude }}</td>
+                                    <td>{{ ee.endereco.municipio_ibge.descricao_mun_ibge }}</td>
+                                    <td>{{ ee.endereco.municipio_ibge.estado_ibge.uf }}</td>
+                                    <td>{{ ee.tipo_endereco }}</td>
+                                    <td><button id="editaendereco" onclick="altera_ende( {{ ee.id }} )" type="button">E</button>
+                                        <button id="deletaendereco" onclick="exclui_ende( {{ ee.id }} )" type="button">X</button>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+
+                    <input type="button" value="Novo endereço"  id="novoendereco">
+                    <br/><br/><br/>
+                    <qq id="formendereco"></qq>
+
+                </div>
+
+                <div class="tab-pane fade {% if not pessoa_active %}{% else %}show active{% endif %}"  id="pessoafisica">
+                    <table class="table table-stipped form-table">
+                        <thead class="thead-light">
+                            <th>Tipo Pessoa</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Telefone</th>
+                            <th>Email</th>
+                            <th>Ações</th>
+                        </thead>
+
+                        {% for ep in entidade.entidadepessoa_set.all %}
+                            {% if ep.dt_extincao == None %}
+                                <tr id="tr_ep{{ ep.id }}">
+                                    <th>{{ ep.pessoa.tipo_pessoa }}</th>
+                                    <th>{{ ep.pessoa.nome_pessoa }}</th>
+                                    <th>{{ ep.pessoa.cpf_pessoa }}</th>
+                                    <th>{{ ep.telefone }}</th>
+                                    <th>{{ ep.email_pessoa }}</th>
+                                    <th>
+                                        <button id="editapessoa" onclick="altera_pessoa( {{ ep.id }} )" type="button">E</button>
+                                        <button id="deletapessoa" onclick="exclui_pessoa( {{ ep.id }} )" type="button">X</button>
+                                    </th>
+                                </tr>
+                            {% endif %}
+
+                        {% endfor %}
+                    </table>
+
+                    <input type="button" value="Nova Pessoa"  id="novapessoa">
+                    <br/><br/><br/>
+                    <qq id="formpessoa"></qq>
+                </div>
+
+                <div class="tab-pane fade {% if not sei_active %}{% else %}show active{% endif %}" id="processos">
+                    <table class="table table-stripped form-table" id="table-listprocessos">
+                        <thead class="thead-light">
+                            <th>Nro processo</th>
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                            <th>Ações</th>
+                        </thead>
+
+                        {% for s in entidade.sei_set.all %}
+                            <tr id="tr_s{{ s.id }}">
+                                <td>{{ s.nro_processo }}</td>
+                                <td>{{ s.descricao }}</td>
+                                <td>{{ s.tipo_processo.descricao_processo }}</td>
+                                <td>
+                                    <button id="deletaprocesso" onclick="exclui_processo( {{ s.id }} )" type="button">X</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                    <input type="button" value="Adiciona Processo"  id="novoprocesso">
+                    <br/><br/><br/>
+                    <qq id="formprocesso"></qq>
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Salvar">
+        </div>
+    </div>
+</form>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+
+
+<script src="{% static 'js/cadastro_forms.js' %}"></script>
+
+<script charset="utf-8">
+
+      $("#novoendereco").click(function() {  <!-- NOVO ENDEREÇO -->
+          var url = $("#alteraForm").attr("ajax-url");
+          console.log("sucesso");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'novo_endereco',
+                  id_entidade: {{ entidade.id }},
+              },
+              success: function (data) {   // `data` is the return of the `load_cities` view function
+                  $("#formendereco").html(data);  // replace the contents of the city input with the data that came from the server
+              }
+          });
+      });
+
+      var altera_ende = function(id){ <!-- ALTERA ENDEREÇO-->
+         var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'altera_endereco',
+                  id_entidade_endereco: id,
+                  id_entidade: {{ entidade.id }},
+
+              },
+              success: function (data) {
+                  $("#formendereco").html(data);
+              }
+          });
+      }
+
+      var exclui_ende = function(id){ <!-- DELETA ENDEREÇO-->
+         var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'exclui_endereco',
+                  id_entidade_endereco: id,
+                  id_entidade: {{ entidade.id }},
+
+              },
+               success: function (data) {
+                  var idtr = "#tr_ee"+id;
+                  $(idtr).remove();
+                  <!--                $("#altera_endereco").remove();-->
+
+
+              }
+          });
+      }
+
+
+
+
+       $("#novapessoa").click(function() {  <!-- NOVA PESSOA -->
+          var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'nova_pessoa',
+                  id_entidade: {{ entidade.id }},
+              },
+              success: function (data) {
+                  $("#formpessoa").html(data);
+              }
+          });
+      });
+
+      var altera_pessoa = function(id){ <!-- ALTERA PESSOA-->
+         var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'altera_pessoa',
+                  id_entidade_pessoa: id,
+                  id_entidade: {{ entidade.id }},
+
+              },
+              success: function (data) {
+                  $("#formpessoa").html(data);
+              }
+          });
+      }
+
+      var exclui_pessoa = function(id){ <!-- DELETA PESSOA -->
+         var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'exclui_pessoa',
+                  id_entidade_pessoa: id,
+                  id_entidade: {{ entidade.id }},
+
+              },
+               success: function (data) {
+                  var idtr = "#tr_ep"+id;
+                  $(idtr).remove();
+              }
+          });
+      }
+
+
+      $("#novoprocesso").click(function() {  <!-- NOVO PROCESSO -->
+          var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'novo_processo',
+              },
+              success: function (data) {   // `data` is the return of the `load_cities` view function
+                  $("#formprocesso").html(data);  // replace the contents of the city input with the data that came from the server
+              }
+          });
+      });
+
+      var exclui_processo = function(id){ <!-- DELETA PROCESSO -->
+         var url = $("#alteraForm").attr("ajax-url");
+          $.ajax({
+              url: url,
+              data: {
+                  action: 'exclui_processo',
+                  id_sei: id,
+                  id_entidade: {{ entidade.id }},
+              },
+               success: function (data) {
+                  var idtr = "#tr_s"+id;
+                  $(idtr).remove();
+              }
+          });
+      }
+</script>
+{% endblock %}
+
+
+
+
+
+{% block custom_js %}
+    <script src="{% static 'forms.js' %}"></script>
+
+{% endblock %}

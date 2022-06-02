@@ -1,0 +1,304 @@
+{% extends 'app.html' %}
+
+{% block container %}
+
+<!-- <b><center>  </center></b> -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+    <div class="section">
+      <div class="section-header">
+        <div class="section-header-title">
+          <h2 class="text-center text-primary">{{ entidade.nome_entidade }}</h2>
+        </div>
+        <div class="section-header-actions">
+          <a class="btn btn-primary" href="{% url 'entidade/altera' entidade.id %}" >Editar</a>
+        </div>
+
+
+      </div>
+
+      <div class="row">
+        <!-- <hr class="sidebar-divider"> -->
+
+        <div class="section-sidebar">
+          <div class="section-title">
+            Entidade
+          </div>
+        </div>
+        <div class="section-content">
+          <div class="row">
+            <!-- <div class="data-group col-4">
+              <div class="label">Nome</div>
+              <div class="value">{{ entidade.nome_entidade }}</div>
+            </div> -->
+            <div class="data-group col-8">
+              <div class="label">Razão Social</div>
+              <div class="value">{{ entidade.razao_social }}</div>
+            </div>
+            <div class="data-group col-2">
+              <div class="label">Tipo</div>
+              <div class="value">{{ entidade.tipo_entidade }}</div>
+            </div>
+            <div class="data-group col-2">
+              <div class="label">Ativa</div>
+              <div class="value">{{ entidade.ativa }}</div>
+            </div>
+            <div class="data-group col-3">
+              <div class="label">CNPJ</div>
+              <div class="value mask mask-cnpj">{{ entidade.cnpj_entidade }}</div>
+            </div>
+            <div class="data-group col-3">
+              <div class="label">Data de Credenciamento</div>
+              <div class="value">{{ entidade.dt_credenciamento | date:'d/m/Y' }}</div>
+            </div>
+            <div class="data-group col-3">
+              <div class="label">Telefone</div>
+              <div class="value">{{ entidade.telefone_entidade }}</div>
+            </div>
+            <div class="data-group col-3">
+              <div class="label">Email</div>
+              <div class="value">{{ entidade.email_entidade }}</div>
+            </div>
+          </div>
+          <!-- <table id="table-vinc-pai" class="table table-hover table-striped">
+            <thead class="thead-light">
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Razão Social</th>
+                <th>Situação</th>
+                <th>Ativa</th>
+                <th>CNPJ</th>
+                <th>Data de Credenciamento</th>
+                <th>Telefone</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ entidade.nome_entidade }}</td>
+                <td>{{ entidade.tipo_entidade }}</td>
+                <td>{{ entidade.razao_social }}</td>
+                <td>{{ entidade.situacao }}</td>
+                <td>{{ entidade.ativa }}</td>
+                <td>{{ entidade.cnpj_entidade }}</td>
+                <td>{{ entidade.dt_credenciamento | date:'d/m/Y' }}</td>
+                <td>{{ entidade.telefone_entidade }}</td>
+                <td>{{ entidade.email_entidade }}</td>
+
+              </tr>
+            </tbody>
+          </table> -->
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <div class="section-sidebar">
+          <div class="section-title">
+            Processos
+          </div>
+        </div>
+        <div class="section-content">
+          <table id="table-processos" class="table table-hover table-striped">
+            <thead class="thead-light">
+              <tr>
+                <th>Número</th>
+                <th>Assunto</th>
+                <th>Descrição</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in entidade.sei_set.all %}
+              <tr>
+                <td class="mask mask-sei">{{ s.nro_processo }}</td>
+                <td>{{ s.tipo_processo.descricao_processo }}</td>
+                <td>{{ s.descricao }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        {% if entidadesvinculadasPais %}
+        <div class="section-sidebar">
+          <div class="section-title">
+            Entidades Pai
+          </div>
+        </div>
+        <div class="section-content">
+            <table id="table-vinc-pai" class="table table-hover table-striped">
+              <thead class="thead-light">
+                <tr>
+                  <th>Nome</th>
+                  <th>Tipo</th>
+                  <th>CNPJ</th>
+                  <th>Vinulação</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ev in entidadesvinculadasPais %}
+                {% if ev.dt_extincao == None %}
+                <tr>
+                  <td>{{ ev.entidade_propria.nome_entidade }}</td>
+                  <td>{{ ev.entidade_propria.tipo_entidade }}</td>
+                  <td class="mask mask-cnpj">{{ ev.entidade_propria.cnpj_entidade }}</td>
+                  <td>{{ ev.dt_vinculacao | date:'d/m/Y'}}</td>
+                  {% for evs in ev.entidadevinsituacao_set.all %}
+                  {% if evs.dt_extincao == None %}
+                  <td>
+                    <span class="badge badge-pill
+                    {% if evs.situacao.descricao_situacao|stringformat:'s' == 'DESCREDENCIADO' %} badge-danger
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'INDEFERIDO' %} badge-danger
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'CREDENCIADO' %} badge-success
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'EM CREDENCIAMENTO' %} badge-warning
+                    {% else %} badge-info
+                    {% endif %}">
+                      {{ evs.situacao.descricao_situacao }}
+                    </span>
+                  </td>
+                  {% endif %}
+                  {% endfor %}
+                </tr>
+                {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+        <hr class="sidebar-divider">
+        {% endif %}
+
+        {% if entidadesvinculadasFilhas %}
+        <div class="section-sidebar">
+          <div class="section-title">
+            Entidades Filha
+          </div>
+        </div>
+        <div class="section-content">
+          <table id="table-vinc-filhos" class="table table-hover table-striped">
+            <thead class="thead-light">
+              <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>CNPJ</th>
+                <th>Vinulação</th>
+                <th>Situação</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ev in entidadesvinculadasFilhas %}
+              {% if ev.dt_extincao == None %}<tr>
+                <td>{{ ev.entidade_filha.nome_entidade }}</td>
+                <td>{{ ev.entidade_filha.tipo_entidade }}</td>
+                <td class="mask mask-cnpj">{{ ev.entidade_filha.cnpj_entidade }}</td>
+                <td>{{ ev.dt_vinculacao | date:'d/m/Y'}}</td>
+                {% for evs in ev.entidadevinsituacao_set.all %}
+                {% if evs.dt_extincao == None %}
+                <!-- Colocar em badge -->
+                <td>
+                  <span class="badge badge-pill
+                    {% if evs.situacao.descricao_situacao|stringformat:'s' == 'DESCREDENCIADO' %} badge-danger
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'INDEFERIDO' %} badge-danger
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'CREDENCIADO' %} badge-success
+                    {% elif evs.situacao.descricao_situacao|stringformat:'s' == 'EM CREDENCIAMENTO' %} badge-warning
+                    {% else %} badge-info
+                    {% endif %}">
+                    {{ evs.situacao.descricao_situacao }}
+                  </span>
+                </td>
+                {% endif %}
+                {% endfor %}
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <hr class="sidebar-divider">
+        {% endif %}
+
+        <div class="section-sidebar">
+          <div class="section-title">
+            Envolvidos
+          </div>
+        </div>
+        <div class="section-content">
+          <table id="table-pessoas" class="table table-hover table-striped">
+            <thead class="thead-light">
+              <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Função</th>
+                <th>Telefone</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for ep in entidade.entidadepessoa_set.all %}
+              <tr>
+                <td>{{ ep.pessoa.nome_pessoa }}</td>
+                <td class="mask mask-cpf">{{ ep.pessoa.cpf_pessoa }}</td>
+                <td>{{ ep.pessoa.tipo_pessoa }}</td>
+                <td>{{ ep.telefone_pessoa }}</td>
+                <td>{{ ep.email_pessoa }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <div class="section-sidebar">
+          <div class="section-title">
+            Endereços
+          </div>
+        </div>
+        <div class="section-content">
+            <table id="table-pessoas" class="table table-hover table-striped">
+              <thead class="thead-light">
+                <tr>
+                  <th>Logradouro</th>
+                  <th>Número</th>
+                  <th>Complemento</th>
+                  <th>Município</th>
+                  <th>Estado</th>
+                  <th>CEP</th>
+                  <th>LatLong</th>
+                  <th>Tipo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ee in entidade.entidadeendereco_set.all %}
+                <tr>
+                  <td>{{ ee.endereco.logradouro }}</td>
+                  <td>{{ ee.endereco.numero }}</td>
+                  <td>{{ ee.endereco.complemento }}</td>
+                  <td>{{ ee.endereco.municipio_ibge.descricao_mun_ibge }}</td>
+                  <td>{{ ee.endereco.municipio_ibge.estado_ibge.uf }}</td>
+                  <td class="mask mask-cep">{{ ee.endereco.cep }}</td>
+                  <td>{{ ee.endereco.latitude }}, {{ ee.endereco.longitude }}</td>
+                  <td>{{ ee.tipo_endereco }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+{% endblock %}

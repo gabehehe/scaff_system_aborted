@@ -1,0 +1,118 @@
+{% extends 'app.html' %}
+{% block side_cadastro %}
+<li class="nav-item active">
+    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseCadastro"
+       aria-expanded="true" aria-controls="collapsePages">
+       <i class="fas fa-fw fa-book"></i>
+       <span>Cadastro</span>
+    </a>
+    <div id="collapseCadastro" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner ">
+            <a class="collapse-item active" href="{% url 'entidade/home' %}">Dashboard</a>
+            <a class="collapse-item" href="{% url 'entidade/lista' %}">Entidades</a>
+            <a class="collapse-item" href="">Pessoas</a>
+            <a class="collapse-item" href="">OID</a>
+            <a class="collapse-item" href="">Processos</a>
+        </div>
+    </div>
+</li>
+{% endblock %}
+
+
+{% block navbar-breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="">{{ page_title }}</a>
+</li>
+{% endblock %}
+{% block container %}
+
+<div class="row">
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            AC de 1° Nível
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdac1.count }} Autoridades</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          <a href="{% url 'entidade/lista' %}">AC de 2° Nível</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdac2.count }} Autoridades</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          <a href="{% url 'entidade/lista' %}">AR</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdar.count }} Autoridades</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          <a href="{% url 'entidade/lista' %}">IT</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdit.count }} Instalações</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          <a href="{% url 'entidade/lista' %}">ITS</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdits.count }} Instalações</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                          <a href="{% url 'entidade/lista' %}">PP</a>
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ qtdpp }} Instalações</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

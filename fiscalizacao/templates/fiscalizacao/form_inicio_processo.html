@@ -1,0 +1,176 @@
+{% extends 'app.html' %}
+
+{% block container %}
+
+
+            <!-- Page Heading -->
+
+          <div id="page-wrapper">
+            <div class="container-fluid">
+
+              <!-- Page Heading -->
+              <h1 class="h3 mb-4 text-gray-800">Novo Processo</h1>
+
+            </div>
+          <hr />
+          <form role="form">
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h4>  Entidade</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                      <div class="form-group">
+                                            <label>Tipo Entidade</label>
+                                            <select class="form-control">
+                                                <option></option>
+                                                <option>Autoridade Certificadora 1º nível</option>
+                                                <option>Autoridade Certificadora 2º nível</option>
+                                                <option>Autoridade de Registro</option>
+                                                <option>Prestador de Serviço de Confiança</option>
+                                                <option>Prestador de Serviço de Suporte</option>
+                                                <option>Prestador de Serviço Biométrico</option>
+                                            </select>
+                                      </div>
+
+                                      <div class="form-group">
+                                            <label>Entidade Fiscalizada</label>
+                                            <select class="form-control">
+                                                <option></option>
+                                                <option>AR SERASA</option>
+                                                <option>AR XPTO</option>
+                                                <option>AR TESTE</option>
+                                                <option>AR CDALFHOI</option>
+                                            </select>
+                                        </div>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                            <label>Entidade de Vinculação</label>
+                                            <select class="form-control">
+                                                <option></option>
+                                                <option>AC CAIXA</option>
+                                                <option>AC DIGITALSIGN</option>
+                                                <option>AC SERASA</option>
+                                                <option>AC CERTISIGN</option>
+                                                <option>AC VALID</option>
+                                                <option>AC PRODEMGE</option>
+                                            </select>
+                                        </div>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <hr />
+            <div class="row">
+              <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h4>Processo</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+
+
+                                      <div class="form-group">
+                                            <label>Número do Processo</label>
+                                            <div class="form-group">
+                                                <input class="form-control" placeholder="Digite o NUP">
+                                            </div>
+                                      </div>
+                                      <div class="form-group">
+                                            <label>Objeto da Fiscalização</label>
+                                            <div class="form-group">
+                                              <textarea class="form-control" rows="6"></textarea>
+                                            </div>
+                                      </div>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                            <label>Previsão de Término</label>
+                                            <div class="form-group">
+                                                <input type="date" class="form-control" >
+                                            </div>
+                                      </div>
+
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h4>Sanções</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                      <div class="form-group">
+                                            <label>Penalidade aplicada</label>
+                                            <select class="form-control">
+                                                <option></option>
+                                                <option>ADVERTÊNCIA</option>
+                                                <option>SUSPENSÃO</option>
+                                                <option>DESCREDENCIAMENTO</option>
+                                            </select>
+                                        </div>
+                                      <div class="form-group">
+                                            <label>Término</label>
+                                            <div class="form-group">
+                                                <input type="date" class="form-control" >
+                                            </div>
+                                      </div>
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                            <label>Início</label>
+                                            <div class="form-group">
+                                                <input type="date" class="form-control" >
+                                            </div>
+                                      </div>
+
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-default btn-success">Enviar</button>
+            <a href="{% url 'fiscalizacao/home' %}" class="btn btn-default btn-warning">Voltar</a>
+            </form>
+        </div>
+        <!-- /#page-wrapper -->
+
+
+    <!-- /#wrapper -->
+{% endblock %}

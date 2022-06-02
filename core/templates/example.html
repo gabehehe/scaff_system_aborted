@@ -1,0 +1,554 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block navbar-breadcrumb %}
+<li class="breadcrumb-item">
+  <a href="{% url 'example' %}">{{ page_title }}</a>
+</li>
+{% endblock %}
+
+{% block side-example %}
+<li class="nav-item active">
+  <a class="nav-link" href="{% url 'example' %}">
+    <i class="fas fa-fw fa-copy"></i>
+    <span>{{ page_title }}</span>
+  </a>
+</li>
+{% endblock %}
+{% block navbar-search %}{% endblock %}
+
+<!-- ##NOTA
+O bloco CONTAINER é encapsulado num .container-fluid, portanto,
+para funcionamento correto do bootstrap, tudo o que for criado dentro
+desse bloco deve estar dentro de uma .row, e o conteúdo desta, dentro
+de uma classe .col-*-*
+-->
+{% block container %}
+<div class="row page-actions">
+  <!--  Essa área deve ser reservada para botões de ação, campos de pesquisa simples e pequenos alertas  -->
+  <!-- <div class="col-md-3 alert alert-dismissible alert-success alert-iconable">
+        <span class="alert-icon fas fa-check-circle"></span>
+        <button type="button" class="close" data-dismiss="alert"><span class="fas fa-times-circle"></span></button>
+        Exemplo de alerta de sucesso.
+    </div> -->
+  <div class="col-md-3">
+    <div class="input-group">
+      <input id="dataTable-search" type="text" class="custom-form-control custom-form-append" placeholder="Search...">
+      <span class="custom-input-group-append">
+        <button type="submit" class="btn btn-primary">
+          <span class="fa fa-search"></span>
+        </button>
+      </span>
+    </div>
+  </div>
+  <!-- <div class="col-md-3">
+        <div class="input-group">
+            <input id="dataTable-search" type="text" class="custom-form-control custom-form-append" placeholder="Search...">
+            <span class="custom-input-group-append inverse">
+              <button type="submit" class="btn btn-primary">
+              <span class="fa fa-search"></span>
+              </button>
+          </span>
+        </div>
+    </div> -->
+  <div class="col-md-1">
+    <div>
+      Área de ação
+    </div>
+  </div>
+  <div class="col-md-4 ml-auto">
+    <div class="actions-btns">
+      <a class="btn btn-primary" href="#">
+        <i class="fa fa-plus"></i>
+        <span class="text">Novo</span>
+      </a>
+      <a class="btn btn-danger" href="#">
+        <i class="fas fa-trash"></i>
+        <span class="text">Excluir</span>
+      </a>
+      <a class="btn btn-outline-primary" href="#">
+        <i class="fas fa-file-download"></i>
+        <span class="text">Gerar Relatório</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+<div class="row">
+   <div class="col-md-8">
+     <div class="page-content bg-white">
+       <div class="row">
+         <div class="col-md-12">
+           <h3>Pesquisa Avançada</h3>
+         </div>
+       </div>
+       <div class="row">
+         <div class="col-md-5">
+           <div class="form-group">
+              <label for="exampleInputEmail1">Entidade</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+         </div>
+       </div>
+     </div>
+   </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="table-example" class="table table-hover page-content-table bg-white" width="100%" cellspacing="0">
+            <thead class="thead-light">
+            <tr>
+                <th id="cabecalho">Username/Login</th>
+                <th id="cabecalho">Email</th>
+                <th id="cabecalho">Tipo de Usuário</th>
+                <th id="cabecalho">Opções</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>daniel.furtado</td>
+                <td>daniel.furtado@iti.gov.br</td>
+                <td>ADMINISTRADOR</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>fabricio.freire</td>
+                <td>fabricio.freire@iti.gov.br</td>
+                <td>ADMINISTRADOR</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>flavio.ribeiro</td>
+                <td>flavio.ribeiro@iti.gov.br</td>
+                <td>COMUM</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>joanne.medeiros</td>
+                <td>joanne.medeiros@iti.gov.br</td>
+                <td>COMUM</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>lucas.amaral</td>
+                <td>lucas.amaral@iti.gov.br</td>
+                <td>ADMINISTRADOR</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>vinicius.costa</td>
+                <td>vinicius.costa@iti.gov.br</td>
+                <td>ADMINISTRADOR</td>
+                <td>
+                    <div class="action-buttons">
+                        <button value="" type="submit"
+                                class="btn"><i class="fa fa-edit"></i></button>
+                        <button value=""
+                                onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false"
+                                type="submit"
+                                class="btn"><i class="fa fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row page-content-table">
+    <div class="col-md-12">
+      <table id="datatable-users" class="table table-hover" width="100%" cellspacing="0">
+          <thead class="thead-light">
+          <tr>
+              <th id="cabecalho">Username/Login</th>
+              <th id="cabecalho">Email</th>
+              <th id="cabecalho">Tipo de Usuário</th>
+              <th id="cabecalho">Opções</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td>daniel.furtado</td>
+              <td>daniel.furtado@iti.gov.br</td>
+              <td>ADMINISTRADOR</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td>fabricio.freire</td>
+              <td>fabricio.freire@iti.gov.br</td>
+              <td>ADMINISTRADOR</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td>flavio.ribeiro</td>
+              <td>flavio.ribeiro@iti.gov.br</td>
+              <td>COMUM</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td>joanne.medeiros</td>
+              <td>joanne.medeiros@iti.gov.br</td>
+              <td>COMUM</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td>lucas.amaral</td>
+              <td>lucas.amaral@iti.gov.br</td>
+              <td>ADMINISTRADOR</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td>vinicius.costa</td>
+              <td>vinicius.costa@iti.gov.br</td>
+              <td>ADMINISTRADOR</td>
+              <td>
+                  <div class="action-buttons">
+                      <button value="" type="submit"
+                              class="btn"><i class="fa fa-edit"></i></button>
+                      <button value=""
+                              onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit"
+                              class="btn"><i class="fa fa-trash-alt"></i></button>
+                  </div>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+    </div>
+</div>
+<div class="row page-content-table">
+  <div class="col-md-12">
+    <table id="datatable-entity" class="table table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th>Nome</th>
+          <th>Empresa</th>
+          <th>Situação</th>
+          <th>Vinculada</th>
+          <th>Tipo</th>
+          <th>Processo</th>
+          <th>Credenciamento</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AC ACD</td>
+          <td>ACD - AUTENTICA CERTIFICADO DIGITAL LTDA ME</td>
+          <td><span class="badge badge-pill badge-warning"><i class="fa fa-exclamation"></i></span>Em credenciamento</td>
+          <td>"AC SOLUTI" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.012107/2018-18 </td>
+          <td>16/10/2018</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC A DIGIFORTE RFB</td>
+          <td>A DIGIFORTE TECNOLOGIA LTDA - ME</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RFB" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000212/2016-34 99990.000530/2017-66 </td>
+          <td>20/07/2017</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC BOA VISTA</td>
+          <td>BOA VISTA SERVICOS S/A</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RAIZ" </td>
+          <td><span class="badge badge-pill badge-success">AC 1º Nível</span></td>
+          <td>00100.000077/2013-84 99990.000021/2017-33 </td>
+          <td>18/10/2013</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC BOA VISTA CERTIFICADORA</td>
+          <td>BOA VISTA SERVICOS S/A</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC BOA VISTA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000078/2013-29 00100.000102/2014-19 </td>
+          <td>24/10/2013</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC BOA VISTA RFB</td>
+          <td>BOA VISTA SERVICOS S/A</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RFB" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000087/2013-10 00100.000103/2014-55 </td>
+          <td>24/10/2013</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC BR RFB</td>
+          <td>INSTITUTO DE REGISTRO IMOBILIARIO DO BRASIL - IRIB</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RFB" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000080/2010-55 00100.000126/2008-11 00100.000230/2012-92 00100.000277/2007-99 </td>
+          <td>12/02/2008</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CACB RFB</td>
+          <td>CONFEDERACAO DAS ASSOCIAÇÕES COMERCIAIS E EMPRESARIAIS DO BRASIL - CACB</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RFB" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000202/2014-37 </td>
+          <td>20/02/2015</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC RAIZ" </td>
+          <td><span class="badge badge-pill badge-success">AC 1º Nível</span></td>
+          <td>00100.000022/2003-01 00100.000024/2003-91 00100.000029/2002-33 00100.000101/2008-18 00100.000182/2008-56 00100.014171/2018-25 </td>
+          <td>22/11/2002</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA IN</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-danger"><i class="fa fa-times"></i></span>Descredenciado</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000028/2002-99 00100.000050/2003-10 </td>
+          <td>10/06/2003</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA JUS</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC JUS" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000082/2010-44 00100.000145/2006-86 00100.000378/2007-60 00100.000431/2005-61 </td>
+          <td>07/04/2006</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA PF</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000025/2003-36 00100.000026/2003-81 00100.000027/2002-44 00100.000057/2003-31 00100.000164/2010-99 00100.000171/2007-95 00100.000172/2007-30 00100.000173/2007-84 00100.000174/2007-29 00100.000175/2007-73 00100.000176/2007-18 </td>
+          <td>06/06/2003</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA PJ</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000030/2002-68 00100.000052/2003-17 00100.000053/2003-53 00100.000058/2003-86 00100.000081/2008-85 00100.000290/2010-43 00100.000372/2007-92 </td>
+          <td>10/06/2003</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA PJ SSL</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>99990.000008/2017-84 </td>
+          <td>13/01/2017</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA PJ TIMESTAMPING</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td>Desistido</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>99990.000009/2017-29 </td>
+          <td>13/01/2017</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>AC CAIXA SPB</td>
+          <td>CAIXA ECONOMICA FEDERAL</td>
+          <td><span class="badge badge-pill badge-success"><i class="fa fa-check"></i></span>Credenciado</td>
+          <td>"AC CAIXA" </td>
+          <td><span class="badge badge-pill badge-info">AC 2º Nível</span></td>
+          <td>00100.000299/2013-05 </td>
+          <td>21/11/2014</td>
+          <td>
+            <div class="action-buttons">
+              <button value="" type="submit" class="btn"><i class="fa fa-edit"></i></button>
+              <button value="" onclick="if (! confirm('Quer realmente excluir esse usuário?')) return false" type="submit" class="btn"><i class="fa fa-trash-alt"></i></button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="row page-content bg-white ">
+   Área de Conteúdo
+</div>
+{% endblock %}
+
+{% block custom_js %}
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block container %}
+
+<form method="POST" id="analise-ocorrencia" ajax-url="{% url 'ajax-monitoramento' %}">
+    {% csrf_token %}
+
+    <button type="button"  onclick="getValues()">Salva na base</button>
+    <div class="container-full" id="oco_container">
+        <div class="row">
+            <div class="col-6">
+        <div class="input-group">
+            <input type="text" id="oco_num" placeholder="Número da Ocorrência" class="custom-form-control custom-form-append" >
+             <span class="custom-input-group-append">
+                <button type="button" id="pesquisa-ocorrencia" class="btn btn-primary">
+                    <span class="fa fa-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+            <div class="col-6">
+        <button type="button" class="d-none btn btn-primary" id="edita-ocorrencia">Editar</button>
+        <button type="button" class="d-none btn btn-primary" id="salva-edicao">Salva</button>
+     </div>
+
+        </div>
+        <div class="row">
+             <div id="ocorrencia_dados_form" class="col-12"></div>
+        </div>
+        <div class="row">
+            <div id="ocorrencia_dados" class="col-12"></div>
+            <div id="certificados-email" class="d-none col-12">
+                <b><span id="qtd-certificados-email" ></span></b>
+                <button type="button" class="btn btn-primary" onclick="search_certificates_email()" id="list-certificates-email">Listar</button>
+            </div>
+
+            <div id="checks" class="d-none col-6">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" onclick="displayInput(infoseg)" id="check_infoseg">
+                    <label class="custom-control-label" for="check_infoseg">
+                       Check Infoseg
+                    </label>
+                    <input type="text" id="infoseg" class="d-none form-control">
+                </div>
+
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" onclick="displayInput(etitulo)" id="check_etitulo">
+                    <label class="custom-control-label" for="check_etitulo">
+                       Check e-Título
+                    </label>
+                    <input type="text" id="etitulo" class="d-none form-control">
+                </div>
+
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" onclick="displayInput(redesociais)" id="check_redes_sociais">
+                    <label class="custom-control-label" for="check_redes_sociais">
+                       Check Redes Sociais
+                    </label>
+                    <input type="text" id="redesociais" class="d-none form-control">
+                </div>
+
+                <label>CPF AGR</label>
+                <input type="text" id="cpf_agr">
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <table id="table-certificates" class="table table-hover page-content-table bg-white d-none">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>CPF</th>
+                        <th>Responsável</th>
+                        <th>Email</th>
+                        <th>Razão Social</th>
+                        <th>CNPJ </th>
+                        <th>not before</th>
+                        <th>not after</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="row">
+            <table id="table-certificates-email" class="table table-hover page-content-table bg-white d-none">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>CPF</th>
+                        <th>Responsável</th>
+                        <th>Email</th>
+                        <th>Razão Social</th>
+                        <th>CNPJ </th>
+                        <th>not before</th>
+                        <th>not after</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+
+
+
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+
+{% endblock %}
+
+
+{% block custom_js %}
+<script src="{% static 'js/analise-form.js' %}"></script>
+{% endblock %}
+
+
+<!-- <label>Serial Number</label><input type="text" > <br/>-->
+<!--    <label>Responsável</label><input type="text" > <br/>-->
+<!--    <label>CPF</label><input type="text" > <br/>-->
+<!--    <label>Razão Social</label><input type="text" > <br/>-->
+<!--    <label>CNPJ</label><input type="text" > <br/>-->
+<!--    <label>Emitido</label><input type="text" > <br/>-->
+<!--    <label>Validade</label><input type="text" > <br/>-->

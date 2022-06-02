@@ -1,0 +1,120 @@
+{% extends 'app.html' %}
+
+{% block navbar-breadcrumb %}
+<li class="breadcrumb-item">
+    <a href="#">Cadastro</a>
+</li>
+<li class="breadcrumb-item">
+    <a href="#">Entidades</a>
+</li>
+{% endblock %}
+
+<!-- {% block side_cadastro %}
+<li class="nav-item active">
+    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseCadastro"
+       aria-expanded="true" aria-controls="collapsePages">
+       <i class="fas fa-fw fa-book"></i>
+       <span>Cadastro</span>
+    </a>
+    <div id="collapseCadastro" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="py-2 collapse-inner ">
+            <a class="collapse-item" href="{% url 'entidade/home' %}">Dashboard</a>
+            <a class="collapse-item active" href="{% url 'entidade/lista' %}">Entidades</a>
+            <a class="collapse-item" href="">Pessoas</a>
+            <a class="collapse-item" href="">OID</a>
+            <a class="collapse-item" href="">Processos</a>
+        </div>
+    </div>
+</li>
+{% endblock %} -->
+
+{% block container %}
+<div class="row page-actions">
+  <!--  Essa área deve ser reservada para botões de ação, campos de pesquisa simples e pequenos alertas  -->
+  <!-- <div class="col-md-3 alert alert-dismissible alert-success alert-iconable">
+        <span class="alert-icon fas fa-check-circle"></span>
+        <button type="button" class="close" data-dismiss="alert"><span class="fas fa-times-circle"></span></button>
+        Exemplo de alerta de sucesso.
+    </div> -->
+  <div class="col-md-3">
+    <div class="input-group">
+      <input id="dataTable-search" type="text" class="custom-form-control custom-form-append" placeholder="Search...">
+      <span class="custom-input-group-append">
+        <button type="submit" class="btn btn-primary">
+          <span class="fa fa-search"></span>
+        </button>
+      </span>
+    </div>
+  </div>
+  <div class="col-md-1">
+    <div>
+      <!-- Área de ação -->
+    </div>
+  </div>
+  <div class="col-md-4 ml-auto">
+    <div class="actions-btns">
+      <a class="btn btn-primary" href="{% url 'entidade/cadastro' %}">
+        <i class="fa fa-plus"></i>
+        <span class="text">Novo</span>
+      </a>
+      <!-- <a class="btn btn-danger" href="#">
+        <i class="fas fa-trash"></i>
+        <span class="text">Excluir</span>
+      </a> -->
+      <!-- <a class="btn btn-outline-primary" href="#">
+        <i class="fas fa-file-download"></i>
+        <span class="text">Gerar Relatório</span>
+      </a> -->
+    </div>
+  </div>
+
+</div>
+<div class="row page-content-table">
+  <div class="col-12">
+    <table id="datatable-entity" class="table table-hover bg-white">
+      <thead class="thead-light">
+        <tr>
+          <th>Nome</th>
+          <th>Tipo</th>
+          <th>Empresa</th>
+          <th>CNPJ</th>
+          <th>Email</th>
+          <th>Credenciamento</th>
+          <th>Ações</th>
+          <!-- <th>Situação</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in entidades %}
+            <tr>
+              <td><a href="{% url 'entidade/detalhes' l.id %}" >{{ l.nome_entidade }}</a></td>
+              <td>
+                <span class="badge badge-pill
+                {% if l.tipo_entidade|stringformat:'s' == 'AR' %} badge-secondary
+                {% elif l.tipo_entidade|stringformat:'s' == 'AC 1º Nível' %} badge-success
+                {% elif l.tipo_entidade|stringformat:'s' == 'AC 2º Nível' %} badge-info
+                {% elif l.tipo_entidade|stringformat:'s' == 'AC RAIZ' %} badge-raiz
+                {% else %} badge-danger
+                {% endif %}">
+                  {{ l.tipo_entidade }}
+                </span>
+              </td>
+              <td>{{ l.razao_social }}</td>
+              <td class="mask mask-cnpj">{{ l.cnpj_entidade }}</td>
+              <td>{{ l.email_entidade }}</td>
+              <td class="">{{ l.dt_credenciamento|date:"d/m/y" }}</td>
+              <td class="text-center">
+                <a href="{% url 'entidade/altera' l.id %}" ><span class="fa fa-edit primary"></span></a>
+                <!-- <span class="fa fa-trash-alt danger"></span> -->
+              </td>
+              <!-- <td>{{ l.ativa }}</td> -->
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+{% endblock %}

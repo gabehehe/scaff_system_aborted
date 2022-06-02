@@ -1,0 +1,86 @@
+<div id="altera_endereco" ajax-url="{% url 'ajax' %}" >
+    {% csrf_token %}
+    {% include 'form.html' with form=form_mun %}
+    {% include 'form.html' with form=form_endereco %}
+
+    {% include 'form.html' with form=form_ent_end %}
+
+
+<!--    <input id="oi" name="oi" value="{{ id_entidade_endereco }}" hidden />-->
+
+    <input type="submit" value="Adicionar"   class='btn btn-primary'/>
+<!--    <input class="btn btn-primary" type="submit" value="Adicionar">-->
+</div>
+
+
+
+
+
+
+<!-- $("#tab_entidade").removeClass('active');-->
+<!--                $("#tab_entidade a").removeClass('active');-->
+
+<!--                $("#tab_endereco").addClass('active');-->
+<!--                $("#tab_endereco a").addClass('active');-->
+
+<!--                $("#entidade").removeClass('show active');-->
+<!--                $("#enderecos").addClass('show active');-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+
+<script>
+
+    $("#id_cep").change(function () {
+       var cep = $(this).val();
+       var url = $("#altera_endereco").attr("ajax-url");
+
+        $.ajax({
+            url: url,
+            data: {
+                'cep': cep,
+                action: 'get_endereco',
+            },
+            dataType: 'json',
+
+            success: function (response) {
+
+                console.log("sucesso");
+                console.log(response);
+                $("#id_logradouro").val(response.logradouro);
+                $("#id_complemento").val(response.complemento);
+                $("#id_bairro").val(response.bairro);
+                $("#id_estado_ibge option").removeAttr('selected');
+                $("#id_municipio_ibge option").removeAttr('selected');
+                $("#id_estado_ibge option[value="+response.ibge[0]+response.ibge[1]+"]").attr('selected','selected');
+                $("#id_municipio_ibge option[value="+response.ibge+"]").attr('selected','selected');
+
+
+            },
+            error: function(response){
+                console.log("erro");
+                console.log(response);
+            }
+        });
+    });
+
+    $("#id_estado_ibge").change(function () {
+        var url = $("#altera_endereco").attr("ajax-url");  // get the url of the `load_cities` view
+        var estadoId = $(this).val();  // get the selected country ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+            data: {
+                'estado_ibge': estadoId,      // add the country id to the GET parameters
+                action: 'load_mun'
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                console.log(data);
+                $("#id_municipio_ibge").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,10 @@
+*.pyc
+*~
+__pycache__
+db.sqlite3
+tcl
+Scripts
+Lib
+Include
+.DS_Store
+.idea

@@ -1,0 +1,552 @@
+{% extends 'app.html' %}
+
+{% load static %}
+
+{% block navbar-breadcrumb %}
+<li class="breadcrumb-item">
+  <a href="{% url 'entidade/home' %}">Cadastro</a>
+</li>
+{% if entidade %}
+<li class="breadcrumb-item">
+  <a href="{% url 'entidade/lista' %}">Entidade</a>
+</li>
+<li class="breadcrumb-item">
+  <a href="">{{ entidade.nome_entidade }}</a>
+</li>
+{% else %}
+<li class="breadcrumb-item">
+  <a href="{% url 'entidade/cadastro' %}">Entidade</a>
+</li>
+{% endif %}
+{% endblock %}
+
+{% block container %}
+  <form method="POST" id="entidadeForm" ajax-url="{% url 'ajax' %}" submit-url="{% url 'entidade/gravaentidade' %}">
+<!--Colocar condicional dependendo da view-->
+<!--<form method="POST" id="alteraForm" ajax-url="{% url 'ajax' %}">-->
+<!--{% if tipo_formulario == 'cadastro' %}-->
+<!--  <form method="POST" id="entidadeForm" ajax-url="{% url 'ajax' %}" submit-url="{% url 'entidade/cadastro' %}">-->
+<!--{% else %}-->
+<!--    {% if tipo_formulario == 'altera' %}-->
+<!--      <form method="POST" id="entidadeForm" ajax-url="{% url 'ajax' %}" submit-url="entidade/altera}">-->
+<!--    {% endif %}-->
+<!--{% endif %}-->
+
+
+  {% csrf_token %}
+  {% if entidade %}
+  <center>
+    <h2><b>{{ entidade.nome_entidade }}</b></h2>
+  </center>
+  {% endif %}
+  <div class="row">
+    <div id="cadastro-tabs" class="offset-1 col-10">
+      <ul id="form-cadastro-steps" class="nav nav-steps">
+        <li class="nav-item {% if not entidade_active %}{% else %}active{% endif %} " id="tab_entidade">
+          <a class="nav-link {% if not entidade_active %}{% else %}active{% endif %} " data-toggle="tab" href="#entidade">
+            <span class="nav-label">Entidade</span>
+            <div class="nav-step"></div>
+          </a>
+        </li>
+
+        {# Definir uma condicional para mostrar essa aba #}
+        {% if entidadesvinculadasPais %}
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#entidadesvinculadas">
+            <span class="nav-label">Vinculações</span>
+            <div class="nav-step"></div>
+          </a>
+        </li>
+        {% endif %}
+
+        <li class="nav-item {% if not endereco_active %}{% else %}active{% endif %} " id="tab_enderecos">
+          <a class="nav-link  {% if not endereco_active %}{% else %}active{% endif %} " data-toggle="tab" href="#enderecos">
+            <span class="nav-label">Endereços</span>
+            <div class="nav-step"></div>
+          </a>
+        </li>
+
+        <li class="nav-item {% if not pessoa_active %}{% else %}active{% endif %} " id="tb_pessoas"">
+                    <a class=" nav-link" data-toggle="tab" href="#pessoafisica">
+          <span class="nav-label">Envolvidos</span>
+          <div class="nav-step"></div>
+          </a>
+        </li>
+        <li class="nav-item {% if not sei_active %}{% else %}show active{% endif %}">
+          <a class="nav-link" data-toggle="tab" href="#processos">
+            <span class="nav-label">Processos</span>
+            <div class="nav-step"></div>
+          </a>
+        </li>
+      </ul>
+      <div id="form-cadastro-content" class="tab-content">
+
+        <div class="tab-pane fade {% if not entidade_active %}{% else %}show active{% endif %} " id="entidade">
+          <div class="form-row justify-content-around">
+            {% include 'form.html' with form=form_entidade %}
+            {% if tipo_formulario == 'cadastro' %}
+              {% include 'form.html' with form=form_ent_vin %}
+              {% include 'form.html' with form=form_ent_vin_sit %}
+            {% endif %}
+          </div>
+        </div>
+
+        {% if entidadesvinculadasPais %}
+        <div class="tab-pane fade" id="entidadesvinculadas">
+          <input type="text" id="id_entidade_vinculada" class="d-none">
+          <label>Entidade Pai</label>
+          <select id="id_entidades_pai">
+            <option>----------</option>
+            {% for entidadepai in entidadespais %}
+              <option id="{{ entidadepai.id }}" value="{{ entidadepai.cnpj_entidade }}">{{ entidadepai }}</option>
+            {% endfor %}
+          </select>
+          <label>Situação</label>
+          <select id="id_situacoes">
+            <option value="0" id="0">----------</option>
+            {% for sit in situacoes %}
+              <option id="{{ sit.id }}" value="{{ sit.id }}">{{ sit }}</option>
+            {% endfor %}
+          </select>
+          <label>Dt vinculação</label>
+          <input type="text" name="dt_vinculacao" id="id_dt_vinculacao">
+          <button id="novavinculacao" type="button" class="btn btn-primary">Adicionar Vinculação</button>
+          <button id="alteravinculacao" type="button" class="btn btn-primary d-none">Altera Vinculação</button>
+          <button id="buttoncancelarvinculacao" type="button" class="btn btn-outline-primary">Cancelar</button>
+
+           <div class="row">
+            <div class="col-md-12">
+              <h5 class="section-title">Vinculações pendentes</h5>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-stripped form-table" id="table-addvinculacao">
+                <thead class="thead-light">
+                  <th>Entidade</th>
+                  <th>CNPJ</th>
+                  <th>DT</th>
+                  <th>Situação</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+          <div class="row">
+            <div class="col-md-12">
+              <div id="listenderecos">
+                <table id="table-listvinculacoes" class="table table-stipped form-table">
+                  <thead class="thead-light">
+                    <th>Entidade</th>
+                    <th>CNPJ</th>
+                    <th>DT</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                  </thead>
+                  <tbody>
+                    {% for ev in entidadesvinculadasPais %}
+                    {% if ev.dt_extincao == None %}
+                    <tr id="tr_ev{{ ev.id }}">
+                      <td class="entidadevin_nome" id="{{ ev.entidade_propria.id }}">{{ ev.entidade_propria.nome_entidade }}</td>
+                      <td class="entidadevin_cnpj">{{ ev.entidade_propria.cnpj_entidade }}</td>
+                      <td class="entidadevin_dt_vinculacao">{{ ev.dt_vinculacao }}</td>
+                      <td class="entidadevin_situacao">
+                        {% for evs in ev.entidadevinsituacao_set.all %}
+                          {% if evs.dt_extincao == None %}
+                            <div class="situacao" id="{{ evs.situacao.id }}">{{ evs.situacao.descricao_situacao }}</div>
+                          {% endif %}
+                        {% endfor %}
+                      </td>
+                      <td>
+                        <button  type="button" onclick="preenche_campos_vinculacao( {{ ev.id }} )">E</button>
+                        <button  type="button" onclick="excluivinculacao( {{ ev.id }} )">X</button>
+                      </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+<!--          {% if entidadesvinculadasFilhas %}-->
+<!--          <hr class="sidebar-divider"><br />-->
+<!--          <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--              <table class="table table-stipped form-table">-->
+<!--                <thead class="thead-light">-->
+<!--                  <th>Entidade</th>-->
+<!--                  <th>CNPJ</th>-->
+<!--                  <th>Situação</th>-->
+<!--                  <th>Ações</th>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                  {% for ev in entidadesvinculadasFilhas %}-->
+<!--                  <tr>-->
+<!--                    <td>{{ ev.entidade_filha.nome_entidade }}</td>-->
+<!--                    <td class="mask-cnpj">{{ ev.entidade_filha.cnpj_entidade }}</td>-->
+<!--                    <td>-->
+<!--                      {% for evs in ev.entidadevinsituacao_set.all %}-->
+<!--                      {% if evs.dt_extincao == None %}-->
+<!--                      {{ evs.situacao.descricao_situacao }}-->
+<!--                      {% endif %}-->
+<!--                      {% endfor %}-->
+<!--                    </td>-->
+<!--                    <td><button>E</button><button>X</button> </td>-->
+<!--                  </tr>-->
+<!--                  {% endfor %}-->
+<!--                </tbody>-->
+<!--              </table>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          {% endif %}-->
+        </div>
+        {% endif %}
+
+        <div class="tab-pane fade {% if not endereco_active %}{% else %}show active{% endif %}" id="enderecos">
+
+          <div class="form-row justify-content-between" id="formendereco">
+            <input type="text" class="d-none" id="id_entidade_endereco">
+            <div class="form-group col-md-3">
+              <label for="id_cep">CEP</label>
+              <input type="text" name="cep" class="form-control cep" id="id_cep">
+            </div>
+            <div class="form-group col-md-2">
+              <label for="id_estado_ibge">UF</label>
+              <select class="form-control" id="id_estado_ibge">
+                <option value="0" id="0">----------</option>
+                {% for e in list_estados_ibge %}
+                <option value="{{ e.id }}" id="{{ e.id }}">{{ e }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="id_municipio_ibge">Cidade</label>
+              <select class="form-control" id="id_municipio_ibge">
+                <option value="0">----------</option>
+                {% for m in list_mun_ibge %}
+                <option value="{{ m.id }}" id="{{ m.id }}">{{ m }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="id_logradouro">Logradouro</label>
+              <input type="text" name="logradouro" class="form-control logradouro" id="id_logradouro">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="id_bairro">Bairro</label>
+              <input type="text" name="bairro" class="form-control bairro" id="id_bairro">
+            </div>
+            <div class="form-group col-md-2">
+              <label for="id_numero">Número</label>
+              <input type="text" name="numero" class="form-control numero" id="id_numero">
+            </div>
+            <div class="form-group col-md-5">
+              <label for="id_complemento">Complemento</label>
+              <input type="text" name="complemento" class="form-control complemento" id="id_complemento">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="id_latitude">Latitude</label>
+              <input type="text" name="latitude" class="form-control latitude" id="id_latitude">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="id_longitude">Longitude</label>
+              <input type="text" name="longitude" class="form-control longitude" id="id_longitude">
+            </div>
+            <div class="form-group col-md-30">
+              <label for="id_tipo_endereco">Tipo endereço</label>
+              <input type="text" name="tipo_endereco" class="form-control tipo_endereco" id="id_tipo_endereco">
+            </div>
+            <!-- <div class="form-group col-md-4">
+              <label for="id_dt_criacao">Data criação</label>
+              <input type="text" name="dt_criacao" class="form-control dt_criacao" id="id_dt_criacao">
+            </div> -->
+          </div>
+
+          <div class="form-actions row justify-content-around">
+            <div class="col-md-5">
+              <button id="buttoncancelarendereco" type="button" class="btn btn-outline-primary">Cancelar</button>
+            </div>
+            <div class="col-md-5 d-flex justify-content-end">
+              <button id="alteraendereco" type="button" class="btn btn-primary d-none">Altera Endereço</button>
+              <button id="novoendereco" type="button" class="btn btn-primary">Adicionar Endereço</button>
+
+              <a href="#enderecos" data-toggle="tab" class="tab-next btn btn-primary">Avançar</a>
+            </div>
+          </div>
+          <br/>
+
+          <div class="row">
+            <div class="col-md-12">
+              <h5 class="section-title">Endereços pendentes</h5>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-stripped form-table" id="table-addenderecos">
+                <thead class="thead-light">
+                  <th>CEP</th>
+                  <th>Logradouro</th>
+                  <th>Bairro</th>
+                  <th>Número</th>
+                  <th>Complemento</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Município</th>
+                  <th>UF</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+
+
+          {% if entidade.entidadeendereco_set.count %}
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-stipped form-table">
+                <thead class="thead-light">
+                  <th>CEP</th>
+                  <th>Logradouro</th>
+                  <th>Bairro</th>
+                  <th>Número</th>
+                  <th>Complemento</th>
+                  <th>Latitude</th>
+                  <th>Longitude</th>
+                  <th>Município</th>
+                  <th>UF</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody>
+                  {% for ee in entidade.entidadeendereco_set.all %}
+                    {% if ee.dt_extincao == None %}
+                      <tr id="tr_ee{{ ee.id }}">
+                        <td class="ende-cep">{{ ee.endereco.cep }}</td>
+                        <td class="ende-logradouro">{{ ee.endereco.logradouro }}</td>
+                        <td class="ende-bairro">{{ ee.endereco.bairro }}</td>
+                        <td class="ende-numero">{{ ee.endereco.numero }}</td>
+                        <td class="ende-complemento">{{ ee.endereco.complemento }}</td>
+                        <td class="ende-latitude">{{ ee.endereco.latitude }}</td>
+                        <td class="ende-longitude">{{ ee.endereco.longitude }}</td>
+                        <td class="ende-mun_ibge" id="{{ ee.endereco.municipio_ibge.id }}">{{ ee.endereco.municipio_ibge.descricao_mun_ibge }}</td>
+                        <td class="ende-estado_ibge" id="{{ ee.endereco.municipio_ibge.estado_ibge.id }}">{{ ee.endereco.municipio_ibge.estado_ibge.uf }}</td>
+                        <td class="ende-tipo_endereco">{{ ee.tipo_endereco }}</td>
+                        <td>
+                          <button id="editaendereco" onclick="preenche_campos_endereco( {{ ee.id }} )" type="button">E</button>
+                          <button id="deletaendereco" onclick="exclui_ende( {{ ee.id }} )" type="button">X</button>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="tab-pane fade {% if not pessoa_active %}{% else %}show active{% endif %}" id="pessoafisica">
+          <input type="text" class="d-none" id="id_entidade_pessoa">
+          <label for="id_cpf">CPF</label>
+          <input type="text" name="cpf" class="cpf" id="id_cpf">
+          <label for="id_nome_pessoa">Nome pessoa</label>
+          <input type="text" name="nome_pessoa" class="nome_pessoa" id="id_nome_pessoa">
+          <label for="id_tipo_pessoa">Tipo pessoa</label>
+          <select id="id_tipo_pessoa">
+            <option value="0" id="0">----------</option>
+            {% for tp in list_tipo_pessoa %}
+            <option value="{{ tp.id }}" id="{{ tp.id }}">{{ tp }}</option>
+            {% endfor %}
+          </select>
+          <label for="id_telefone_pessoa">Telefone</label>
+          <input type="text" name="telefone" class="telefone" id="id_telefone_pessoa">
+          <label for="id_email_pessoa">Email</label>
+          <input type="text" name="email_pessoa" class="email_pessoa" id="id_email_pessoa">
+
+
+          <button id="novapessoa" type="button" class="btn btn-primary">Adicionar Pessoa</button>
+          <button id="alterapessoa" type="button" class="btn btn-primary d-none">Altera Pessoa</button>
+          <button id="buttoncancelarpessoa" type="button" class="btn btn-outline-primary">Cancelar</button>
+
+          <br /><br /><br />
+
+          <div class="row">
+            <div class="col-md-12">
+              <h5 class="section-title">Pessoas pendentes</h5>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-stripped form-table" id="table-addpessoas">
+                <thead class="thead-light">
+                  <th>Tipo pessoa</th>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>Email</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+
+          {% if entidade.entidadepessoa_set.count %}
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-stipped form-table" id="table-listpessoas">
+                <thead class="thead-light">
+                  <th>Tipo Pessoa</th>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>Email</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody>
+                  {% for ep in entidade.entidadepessoa_set.all %}
+                  {% if ep.dt_extincao == None %}
+                  <tr id="tr_ep{{ ep.id }}">
+                    <td class="pessoa-tipo_pessoa" id="{{ ep.pessoa.tipo_pessoa.id }}">{{ ep.pessoa.tipo_pessoa }}</td>
+                    <td class="pessoa-nome">{{ ep.pessoa.nome_pessoa }}</td>
+                    <td class="pessoa-cpf">{{ ep.pessoa.cpf_pessoa }}</td>
+                    <td class="pessoa-telefone">{{ ep.telefone_pessoa }}</td>
+                    <td class="pessoa-email">{{ ep.email_pessoa }}</td>
+                    <td>
+                      <button id="editapessoa" onclick="preenche_campos_pessoa( {{ ep.id }} )" type="button">E</button>
+                      <button id="deletapessoa" onclick="exclui_pessoa( {{ ep.id }} )" type="button">X</button>
+                    </td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+
+
+        </div>
+
+        <div class="tab-pane fade {% if not sei_active %}{% else %}show active{% endif %}" id="processos">
+          <div class="form-actions row justify-content-around">
+            <div class="col-md-5">
+              <h3>Processos</h3>
+            </div>
+            <div class="col-md-5 d-flex justify-content-end">
+              <a href="#enderecos" data-toggle="tab" class="tab-next btn btn-primary">Avançar</a>
+            </div>
+          </div>
+          <div id="formprocesso" class="form-row col-md-6">
+            <div class="form-group col-md-6">
+              <label for="">Processo</label>
+              <input class="form-control" id="id_nro_processo" type="text" name="" value="">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="">Tipo</label>
+              <select id="id_tipo_processo" class="form-control">
+                <option value="0">----------</option>
+                {% for p in listTipoProcesso %}
+                <option value="{{ p.id }}">{{ p.descricao_processo }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-12">
+              <label for="">Descrição</label>
+              <textarea id="id_descricao" class="form-control" name="name" rows="8" cols="80"></textarea>
+            </div>
+          </div>
+          <div class="form-actions row justify-content-around">
+            <div class="col-md-5"></div>
+            <div class="col-md-5 d-flex justify-content-end">
+              <button id="novoprocesso" type="button" class="btn btn-primary">Adicionar Processo</button>
+              <button id="buttoncancelarprocessos" type="button" class="btn btn-outline-primary">Cancelar</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <h5 class="section-title">Processos pendentes</h5>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-stripped form-table" id="table-addprocessos">
+                <thead class="thead-light">
+                  <th>Nro processo</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% if entidade.sei_set.count %}
+          <div class="row">
+            <div class="col-md-12">
+              <h5 class="section-title">Processos cadastrados</h5>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-stripped form-table" id="table-listprocessos">
+                <thead class="thead-light">
+                  <th>Nro processo</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </thead>
+                <tbody>
+                  {% for s in entidade.sei_set.all %}
+                  <tr id="tr_s{{ s.id }}">
+                    <td class="sei_nroprocesso">{{ s.nro_processo }}</td>
+                    <td>{{ s.descricao }}</td>
+                    <td>{{ s.tipo_processo.descricao_processo }}</td>
+                    <td>
+                      <button id="deletaprocesso" onclick="exclui_processo( {{ s.id }}, {{ entidade.id }} )" type="button">X</button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+          <div class="form-actions row justify-content-around">
+            <div class="col-md-5"></div>
+            <div class="col-md-5 d-flex justify-content-end">
+              <a href="#enderecos" data-toggle="tab" class="tab-next btn btn-primary">Avançar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Salvar">
+    </div>
+  </div>
+</form>
+
+
+
+<!--<script src="{% static 'js/cadastro_forms.js' %}"></script> -->
+{% endblock %}
+
+
+
+
+
+{% block custom_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css"/>
+<script src="{% static 'js/form_entidade.js' %}"></script>
+{% endblock %}
+
