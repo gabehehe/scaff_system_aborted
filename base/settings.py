@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'db_scaff',
         'USER': 'sgc2.cgafi',
         'PASSWORD': '_sgC2Cg@fi*',
-        'HOST': 'pgsgbd.in.iti.gov.br',
+        'HOST': 'pgsgbd.in.host',
         'PORT': '5432',
     }
 }
