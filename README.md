@@ -2,6 +2,8 @@
 
 Sistema para Cadastro, Auditorias, Fiscalizações e Análise de Fraudes.
 
+Obs: sistema descartado.
+
 ## Desenvolvimento
 
 Essa documentação é voltada para o Sistema operacional Windows e para a IDE Pycharm.
